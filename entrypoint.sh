@@ -17,6 +17,12 @@ else
   CLUSTER_NAME=$GITHUB_ACTOR-$NOW
 fi
 
+if [ -n "${VERSION}" ]; then
+  CLUSTER_VERSION=${VERSION}
+else
+  CLUSTER_VERSION='1.17'
+fi
+
 echo "Provisioning EKS on Fargate cluster $CLUSTER_NAME in $TARGET_REGION"
 
 # create EKS on Fargate cluster:
@@ -27,7 +33,7 @@ kind: ClusterConfig
 metadata:
   name: $CLUSTER_NAME
   region: $TARGET_REGION
-  version: '1.16'
+  version: $CLUSTER_VERSION
 iam:
   withOIDC: true
 fargateProfiles:
