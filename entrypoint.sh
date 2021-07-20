@@ -18,7 +18,7 @@ else
 fi
 
 if [ -n "${VERSION}" ]; then
-  CLUSTER_VERSION=${VERSION}
+  CLUSTER_VERSION='${VERSION}'
 else
   CLUSTER_VERSION='1.17'
 fi
