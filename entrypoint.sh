@@ -18,7 +18,7 @@ else
 fi
 
 if [ -n "${VERSION}" ]; then
-  CLUSTER_VERSION="${VERSION}"
+  CLUSTER_VERSION=${VERSION}
 else
   CLUSTER_VERSION='1.17'
 fi
@@ -33,7 +33,7 @@ kind: ClusterConfig
 metadata:
   name: $CLUSTER_NAME
   region: $TARGET_REGION
-  version: $CLUSTER_VERSION
+  version: '$CLUSTER_VERSION'
 iam:
   withOIDC: true
 fargateProfiles:
