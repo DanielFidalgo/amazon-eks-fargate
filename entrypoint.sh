@@ -46,7 +46,7 @@ cloudWatch:
   clusterLogging:
     enableTypes: ["*"]
 EOF
-eksctl create cluster -f ${tmpdir}/fg-cluster-spec.yaml --alb-ingress-access
+eksctl create cluster -f ${tmpdir}/fg-cluster-spec.yaml
 
 # check if cluster if available
 echo "Waiting for cluster $CLUSTER_NAME in $TARGET_REGION to become available"
@@ -66,3 +66,23 @@ kubectl config set-context $(kubectl config current-context) --namespace=serverl
 # patch kube-system namespace to run also on Fargate:
 kubectl --namespace kube-system patch deployment coredns \
         --type json -p='[{"op": "remove", "path": "/spec/template/metadata/annotations/eks.amazonaws.com~1compute-type"}]'
+
+# allow the cluster to use AWS Identity and Access Management (IAM) for service accounts
+eksctl utils associate-iam-oidc-provider --cluster $CLUSTER_NAME --approve
+
+# download an IAM policy that allows the AWS Load Balancer Controller to make calls to AWS APIs
+curl -o ${tmpdir}/iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.2.0/docs/install/iam_policy.json
+
+# create an IAM policy using the policy
+aws iam create-policy --policy-name AlbControllerIAMPolicy --policy-document ${tmpdir}/iam_policy.json
+
+# retrieve identity
+Identity= $( aws sts get-caller-identity )
+
+eksctl create iamserviceaccount \
+  --cluster=$CLUSTER_NAME \
+  --namespace=kube-system \
+  --name=alb-controller \
+  --attach-policy-arn=arn:aws:iam::${Identity.Account}:policy/AlbControllerIAMPolicy \
+  --override-existing-serviceaccounts \
+  --approve
