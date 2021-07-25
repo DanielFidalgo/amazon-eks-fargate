@@ -41,11 +41,12 @@ fargateProfiles:
     selectors:
       - namespace: serverless
       - namespace: kube-system
+      - namespace: default
 cloudWatch:
   clusterLogging:
     enableTypes: ["*"]
 EOF
-eksctl create cluster -f ${tmpdir}/fg-cluster-spec.yaml
+eksctl create cluster -f ${tmpdir}/fg-cluster-spec.yaml --alb-ingress-access
 
 # check if cluster if available
 echo "Waiting for cluster $CLUSTER_NAME in $TARGET_REGION to become available"
