@@ -77,12 +77,12 @@ curl -o ${tmpdir}/iam_policy.json https://raw.githubusercontent.com/kubernetes-s
 aws iam create-policy --policy-name AlbControllerIAMPolicy --policy-document file://${tmpdir}/iam_policy.json
 
 # retrieve identity
-Identity=$(aws sts get-caller-identity)
+Account=$(aws sts get-caller-identity | jq -r '.Account')
 
 eksctl create iamserviceaccount \
   --cluster=$CLUSTER_NAME \
   --namespace=kube-system \
   --name=alb-controller \
-  --attach-policy-arn=arn:aws:iam::${Identity.Account}:policy/AlbControllerIAMPolicy \
+  --attach-policy-arn=arn:aws:iam::${Account}:policy/AlbControllerIAMPolicy \
   --override-existing-serviceaccounts \
   --approve
