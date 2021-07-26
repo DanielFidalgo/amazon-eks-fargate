@@ -77,7 +77,7 @@ curl -o ${tmpdir}/iam_policy.json https://raw.githubusercontent.com/kubernetes-s
 aws iam create-policy --policy-name AlbControllerIAMPolicy --policy-document file://${tmpdir}/iam_policy.json
 
 # retrieve identity
-Identity= $( aws sts get-caller-identity )
+Identity=$(aws sts get-caller-identity)
 
 eksctl create iamserviceaccount \
   --cluster=$CLUSTER_NAME \
