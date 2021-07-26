@@ -74,7 +74,7 @@ eksctl utils associate-iam-oidc-provider --cluster $CLUSTER_NAME --approve
 curl -o ${tmpdir}/iam_policy.json https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.2.0/docs/install/iam_policy.json
 
 # create an IAM policy using the policy
-aws iam create-policy --policy-name AlbControllerIAMPolicy --policy-document ${tmpdir}/iam_policy.json
+aws iam create-policy --policy-name AlbControllerIAMPolicy --policy-document file://${tmpdir}/iam_policy.json
 
 # retrieve identity
 Identity= $( aws sts get-caller-identity )
