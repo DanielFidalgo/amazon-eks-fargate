@@ -2,7 +2,7 @@ FROM amazonlinux:2018.03
 LABEL maintainer="Michael Hausenblas, hausenbl@amazon.com"
 
 # install eksctl, IAM authenticator, kubectl, and jq:
-RUN yum -y install shadow-utils unzip && \
+RUN yum -y install shadow-utils unzip git && \
     curl https://amazon-eks.s3.us-west-2.amazonaws.com/1.16.8/2020-04-16/bin/linux/amd64/aws-iam-authenticator -o aws-iam-authenticator  && \
     chmod +x ./aws-iam-authenticator && \
     mv ./aws-iam-authenticator /usr/local/bin && \
