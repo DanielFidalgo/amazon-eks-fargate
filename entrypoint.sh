@@ -79,6 +79,7 @@ aws iam create-policy --policy-name AlbControllerIAMPolicy --policy-document fil
 # retrieve identity
 Account=$(aws sts get-caller-identity | jq -r '.Account')
 
+# create Service Account
 eksctl create iamserviceaccount \
   --cluster=$CLUSTER_NAME \
   --namespace=kube-system \
@@ -86,3 +87,20 @@ eksctl create iamserviceaccount \
   --attach-policy-arn=arn:aws:iam::${Account}:policy/AlbControllerIAMPolicy \
   --override-existing-serviceaccounts \
   --approve
+
+# adding eks charts
+helm repo add eks https://aws.github.io/eks-charts
+
+# adding eks charts
+kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+
+VPC_ID=$(aws eks describe-cluster --name $CLUSTER_NAME | jq -r '.vpcId')
+
+# Install load balancer
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+    --set clusterName=$CLUSTER_NAME \
+    --set serviceAccount.create=false \
+    --set region=TARGET_REGION \
+    --set vpcId=$VPC_ID \
+    --set serviceAccount.name=alb-controller \
+    -n kube-system
