@@ -94,13 +94,13 @@ helm repo add eks https://aws.github.io/eks-charts
 # adding eks charts
 kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
 
-VPC_ID=$(aws eks describe-cluster --name $CLUSTER_NAME | jq -r '.vpcId')
+VPC_ID=$(aws eks describe-cluster --name $CLUSTER_NAME | jq -r '.cluster.resourcesVpcConfig.vpcId')
 
 # Install load balancer
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
     --set clusterName=$CLUSTER_NAME \
     --set serviceAccount.create=false \
-    --set region=TARGET_REGION \
+    --set region=$TARGET_REGION \
     --set vpcId=$VPC_ID \
     --set serviceAccount.name=alb-controller \
     -n kube-system
