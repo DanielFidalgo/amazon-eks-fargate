@@ -20,7 +20,7 @@ fi
 if [ -n "${VERSION}" ]; then
   CLUSTER_VERSION=${VERSION}
 else
-  CLUSTER_VERSION='1.17'
+  CLUSTER_VERSION='1.21'
 fi
 
 echo "Provisioning EKS on Fargate cluster $CLUSTER_NAME in $TARGET_REGION"
