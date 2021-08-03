@@ -98,9 +98,12 @@ VPC_ID=$(aws eks describe-cluster --name $CLUSTER_NAME | jq -r '.cluster.resourc
 
 # Install load balancer
 helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-    --set clusterName=$CLUSTER_NAME \
-    --set serviceAccount.create=false \
-    --set region=$TARGET_REGION \
-    --set vpcId=$VPC_ID \
-    --set serviceAccount.name=alb-controller \
-    -n kube-system
+  --set clusterName=$CLUSTER_NAME \
+  --set serviceAccount.create=false \
+  --set serviceAccount.name=alb-controller \
+  --set region=$TARGET_REGION \
+  --set vpcId=$VPC_ID \
+  -n kube-
+  
+# Generate .kube/config
+aws eks --region $TARGET_REGION update-kubeconfig --name $CLUSTER_NAME
