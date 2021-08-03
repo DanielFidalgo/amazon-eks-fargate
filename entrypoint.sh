@@ -103,7 +103,7 @@ helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
   --set serviceAccount.name=alb-controller \
   --set region=$TARGET_REGION \
   --set vpcId=$VPC_ID \
-  -n kube-
+  -n kube-system
   
 # Generate .kube/config
 aws eks --region $TARGET_REGION update-kubeconfig --name $CLUSTER_NAME
